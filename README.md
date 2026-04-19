@@ -118,29 +118,9 @@ Production build: set `VITE_API_URL` to your deployed API URL (see `frontend/.en
 - **Role-based access** — admin for create/update/simulate; users for saved locations.
 - **Third-party weather** — optional OpenWeatherMap air + weather at a point.
 
-## Deployment
+## Local setup
 
-### GitHub
-
-1. Create a repository and push this project.
-
-### Backend (Render / Railway)
-
-1. New **Web Service** from the repo; root directory `backend`.
-2. Build: `npm install` · Start: `npm start`.
-3. Set env: `MONGODB_URI`, `JWT_SECRET`, `PORT` (often auto), `CORS_ORIGIN` = your frontend URL.
-4. Optional: `OPENWEATHER_API_KEY`.
-5. After first deploy, run seed once (Render shell / one-off job): `node src/scripts/seed.js` with the same `MONGODB_URI`.
-
-### Frontend (Vercel / Netlify)
-
-1. Root directory `frontend`, build `npm run build`, output `dist`.
-2. Env: `VITE_API_URL=https://your-api.onrender.com` (no trailing slash).
-3. Redeploy after backend URL is stable.
-
-### MongoDB Atlas
-
-- Create cluster → connection string → use as `MONGODB_URI` (with user/password).
+Refer to the documentation inside `frontend/` and `backend/` for detailed local setup instructions.
 
 ## Sample dataset
 
