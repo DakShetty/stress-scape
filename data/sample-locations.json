@@ -1,0 +1,11 @@
+{
+  "description": "Subset of Maharashtra-style urban points for Urban Stress Mapping (illustrative). Full seed creates 42 documents via backend/src/scripts/seed.js",
+  "stressFormula": "normalized 0-100 each: 0.4*AQI_norm + 0.3*Temp_norm + 0.3*Crowd_norm",
+  "locations": [
+    { "name": "CSMT — High crowd transit", "latitude": 18.9398, "longitude": 72.8354, "aqi": 142, "temperature": 31, "crowdDensity": 88 },
+    { "name": "Bandra Kurla Complex", "latitude": 19.0669, "longitude": 72.8677, "aqi": 128, "temperature": 32, "crowdDensity": 72 },
+    { "name": "Marine Drive promenade", "latitude": 18.9442, "longitude": 72.8238, "aqi": 95, "temperature": 29, "crowdDensity": 65 },
+    { "name": "Powai IT corridor", "latitude": 19.1174, "longitude": 72.9098, "aqi": 118, "temperature": 30, "crowdDensity": 58 },
+    { "name": "Pune FC Road", "latitude": 18.5074, "longitude": 73.8077, "aqi": 112, "temperature": 29, "crowdDensity": 76 }
+  ]
+}
