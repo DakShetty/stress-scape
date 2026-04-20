@@ -18,7 +18,7 @@ export default function App() {
         </Routes>
       </main>
       <footer className="border-t border-white/5 py-6 text-center text-xs text-mist/40">
-        StressScape — FSD project · Data is illustrative
+        StressScape · Data is illustrative
       </footer>
     </div>
   );
