@@ -13,9 +13,29 @@ import { errorHandler, notFound } from './src/middleware/errorHandler.js';
 
 const app = express();
 const PORT = process.env.PORT || 5100;
-const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
 
-app.use(cors({ origin: corsOrigin, credentials: true }));
+// Dynamic CORS to support localhost, production domain, and Vercel previews
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.CORS_ORIGIN
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = allowedOrigins.includes(origin) || origin.endsWith('.vercel.app');
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked for origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/health', (req, res) => {
