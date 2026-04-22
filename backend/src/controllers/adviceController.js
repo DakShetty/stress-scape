@@ -112,6 +112,7 @@ export const handleAdvice = async (req, res, next) => {
         const apiKey = process.env.GEMINI_API_KEY.trim().replace(/^["']|["']$/g, '');
         console.log(`[Diagnostic] Gemini Key Length: ${apiKey.length}, Starts with: ${apiKey.slice(0, 5)}...`);
         const ai = new GoogleGenerativeAI(apiKey);
+        // Explicitly use 'v1' as Render/Region might have issues with the default v1beta
         
         const promptText = `You are an expert Urban Health & Safety Advisor. 
 Current Sensor Context (Live WAQI/TomTom data):
@@ -140,7 +141,7 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         for (const modelName of modelsToTry) {
           try {
             console.log(`Trying Gemini model: ${modelName}...`);
-            const model = ai.getGenerativeModel({ model: modelName });
+            const model = ai.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
             result = await model.generateContent(promptText);
             success = true;
             console.log(`Success with model: ${modelName}`);
