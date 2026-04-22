@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Smart rule-based engine — context-aware advice from real sensor data
 function ruleBasedAdvice(plan, aqi, temp, crowd, noise, stress) {
@@ -109,7 +109,7 @@ export const handleAdvice = async (req, res, next) => {
     // Try Gemini API first if key available
     if (process.env.GEMINI_API_KEY) {
       try {
-        const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
+        const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
         
         const promptText = `You are an expert Urban Health & Safety Advisor. 
