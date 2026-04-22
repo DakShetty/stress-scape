@@ -164,15 +164,25 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         try { outJson = JSON.parse(rawText); }
         catch { const m = rawText.match(/\{[\s\S]*\}/); if (m) outJson = JSON.parse(m[0]); }
 
-        if (outJson?.advice) return res.json(outJson);
-      } catch (apiErr) {
-        console.error('GEMINI_ERROR:', apiErr.message);
+        // Perform a direct REST API call to check what models are ACTUALLY allowed for this key
+        let availableModelsList = '';
+        try {
+          const fetchRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+          const fetchJson = await fetchRes.json();
+          if (fetchJson.error) {
+              availableModelsList = `Google API Auth Error: ${fetchJson.error.message}`;
+          } else {
+             const models = fetchJson.models?.map(m => m.name).join(', ') || 'No models listed';
+             availableModelsList = `Available to this key: ${models}`;
+          }
+        } catch (fetchE) {
+             availableModelsList = `Fetch error: ${fetchE.message}`;
+        }
         
-        // Return the error directly to the frontend/API for immediate debugging
         const fallback = ruleBasedAdvice(plan, aqi, temp, crowd, noise, stress);
         return res.json({
             ...fallback,
-            debugError: `AI Blocked: ${apiErr.message}`
+            debugError: `AI Blocked (404/403). ${availableModelsList}`
         });
       }
     }
