@@ -128,13 +128,13 @@ Analyze the variables and provide a UNIQUE, empathetic, and highly practical hea
 Avoid generic phrases. Use a professional yet conversational tone.
 Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk": "Low" | "Medium" | "High"}`;
 
-        // Attempt generation with an even broader fallback model strategy
+        // Attempt generation with a broader fallback model strategy
         let result;
         const modelsToTry = [
-          'gemini-1.5-flash-latest', 
-          'gemini-1.5-flash', 
-          'gemini-1.5-pro', 
-          'gemini-pro'
+          'models/gemini-1.5-flash', 
+          'models/gemini-1.5-pro', 
+          'models/gemini-pro',
+          'models/gemini-1.5-flash-latest'
         ];
         let success = false;
 
@@ -147,7 +147,7 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
             console.log(`Success with model: ${modelName}`);
             break; 
           } catch (err) {
-            console.warn(`Model ${modelName} failed: ${err.message?.slice(0, 100)}`);
+            console.warn(`Model ${modelName} failed: Status ${err.status || 'Unknown'} - ${err.message?.slice(0, 100)}`);
           }
         }
 
