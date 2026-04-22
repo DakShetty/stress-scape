@@ -164,6 +164,10 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         try { outJson = JSON.parse(rawText); }
         catch { const m = rawText.match(/\{[\s\S]*\}/); if (m) outJson = JSON.parse(m[0]); }
 
+        if (outJson?.advice) return res.json(outJson);
+      } catch (apiErr) {
+        console.error('GEMINI_ERROR:', apiErr.message);
+
         // Perform a direct REST API call to check what models are ACTUALLY allowed for this key
         let availableModelsList = '';
         try {
