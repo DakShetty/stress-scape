@@ -110,7 +110,6 @@ export const handleAdvice = async (req, res, next) => {
     if (process.env.GEMINI_API_KEY) {
       try {
         const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
         
         const promptText = `You are an expert Urban Health & Safety Advisor. 
 Current Sensor Context (Live WAQI/TomTom data):
@@ -126,7 +125,17 @@ Analyze the variables and provide a UNIQUE, empathetic, and highly practical hea
 Avoid generic phrases. Use a professional yet conversational tone.
 Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk": "Low" | "Medium" | "High"}`;
 
-        const result = await model.generateContent(promptText);
+        // Attempt generation with a fallback model strategy
+        let result;
+        try {
+          const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+          result = await model.generateContent(promptText);
+        } catch (flashErr) {
+          console.warn('Gemini 1.5 Flash 404, trying Gemini Pro fallback...');
+          const modelPro = ai.getGenerativeModel({ model: 'gemini-pro' });
+          result = await modelPro.generateContent(promptText);
+        }
+
         const response = await result.response;
         let rawText = response.text()
           .replace(/^```(json)?\n?/i, '').replace(/\n?```\s*$/i, '').trim();
@@ -138,8 +147,7 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         if (outJson?.advice) return res.json(outJson);
       } catch (apiErr) {
         console.error('GEMINI_ERROR:', apiErr.message);
-        if (apiErr.stack) console.error(apiErr.stack);
-        console.warn('Gemini unavailable, using rule-based fallback.');
+        console.warn('AI Advisor unavailable, using rule-based fallback.');
       }
     }
 
