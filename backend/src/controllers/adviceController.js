@@ -109,7 +109,9 @@ export const handleAdvice = async (req, res, next) => {
     // Try Gemini API first if key available
     if (process.env.GEMINI_API_KEY) {
       try {
-        const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const apiKey = process.env.GEMINI_API_KEY.trim().replace(/^["']|["']$/g, '');
+        console.log(`[Diagnostic] Gemini Key Length: ${apiKey.length}, Starts with: ${apiKey.slice(0, 5)}...`);
+        const ai = new GoogleGenerativeAI(apiKey);
         
         const promptText = `You are an expert Urban Health & Safety Advisor. 
 Current Sensor Context (Live WAQI/TomTom data):
@@ -125,9 +127,14 @@ Analyze the variables and provide a UNIQUE, empathetic, and highly practical hea
 Avoid generic phrases. Use a professional yet conversational tone.
 Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk": "Low" | "Medium" | "High"}`;
 
-        // Attempt generation with a fallback model strategy
+        // Attempt generation with an even broader fallback model strategy
         let result;
-        const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'gemini-1.0-pro'];
+        const modelsToTry = [
+          'gemini-1.5-flash-latest', 
+          'gemini-1.5-flash', 
+          'gemini-1.5-pro', 
+          'gemini-pro'
+        ];
         let success = false;
 
         for (const modelName of modelsToTry) {
@@ -136,14 +143,15 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
             const model = ai.getGenerativeModel({ model: modelName });
             result = await model.generateContent(promptText);
             success = true;
+            console.log(`Success with model: ${modelName}`);
             break; 
           } catch (err) {
-            console.warn(`Model ${modelName} failed: ${err.message?.slice(0, 50)}`);
+            console.warn(`Model ${modelName} failed: ${err.message?.slice(0, 100)}`);
           }
         }
 
         if (!success) {
-          throw new Error('All Gemini model variants failed (404 or Quota).');
+          throw new Error('All Gemini model variants failed (check API key or region).');
         }
 
         const response = await result.response;
