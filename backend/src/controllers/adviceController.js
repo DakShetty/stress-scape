@@ -108,11 +108,10 @@ export const handleAdvice = async (req, res, next) => {
 
     // Try Gemini API first if key available
     if (process.env.GEMINI_API_KEY) {
+      const apiKey = process.env.GEMINI_API_KEY.trim().replace(/^["']|["']$/g, '');
       try {
-        const apiKey = process.env.GEMINI_API_KEY.trim().replace(/^["']|["']$/g, '');
         console.log(`[Diagnostic] Gemini Key Length: ${apiKey.length}, Starts with: ${apiKey.slice(0, 5)}...`);
         const ai = new GoogleGenerativeAI(apiKey);
-        // Explicitly use 'v1' as Render/Region might have issues with the default v1beta
         
         const promptText = `You are an expert Urban Health & Safety Advisor. 
 Current Sensor Context (Live WAQI/TomTom data):
@@ -131,9 +130,9 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         // Attempt generation with a broader fallback model strategy
         let result;
         const modelsToTry = [
-          'gemini-1.5-flash', 
-          'gemini-1.5-pro', 
-          'gemini-pro'
+          'gemini-flash-latest', 
+          'gemini-2.5-flash', 
+          'gemini-pro-latest'
         ];
         let success = false;
         let lastError = '';
@@ -141,7 +140,7 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         for (const modelName of modelsToTry) {
           try {
             console.log(`Trying Gemini model: ${modelName}...`);
-            const model = ai.getGenerativeModel({ model: modelName }, { apiVersion: 'v1beta' });
+            const model = ai.getGenerativeModel({ model: modelName });
             result = await model.generateContent(promptText);
             success = true;
             console.log(`Success with model: ${modelName}`);
@@ -174,10 +173,10 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
           const fetchRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
           const fetchJson = await fetchRes.json();
           if (fetchJson.error) {
-              availableModelsList = `Google API Auth Error: ${fetchJson.error.message}`;
+              availableModelsList = `REST Error: ${fetchJson.error.message}`;
           } else {
              const models = fetchJson.models?.map(m => m.name).join(', ') || 'No models listed';
-             availableModelsList = `Available to this key: ${models}`;
+             availableModelsList = `Allowed: ${models}`;
           }
         } catch (fetchE) {
              availableModelsList = `Fetch error: ${fetchE.message}`;
@@ -186,7 +185,7 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         const fallback = ruleBasedAdvice(plan, aqi, temp, crowd, noise, stress);
         return res.json({
             ...fallback,
-            debugError: `AI Blocked (404/403). ${availableModelsList}`
+            debugError: `SDK Err: ${apiErr.message} | ${availableModelsList}`
         });
       }
     }
