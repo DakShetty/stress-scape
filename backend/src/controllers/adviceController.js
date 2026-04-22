@@ -131,28 +131,29 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         // Attempt generation with a broader fallback model strategy
         let result;
         const modelsToTry = [
-          'models/gemini-1.5-flash', 
-          'models/gemini-1.5-pro', 
-          'models/gemini-pro',
-          'models/gemini-1.5-flash-latest'
+          'gemini-1.5-flash', 
+          'gemini-1.5-pro', 
+          'gemini-pro'
         ];
         let success = false;
+        let lastError = '';
 
         for (const modelName of modelsToTry) {
           try {
             console.log(`Trying Gemini model: ${modelName}...`);
-            const model = ai.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
+            const model = ai.getGenerativeModel({ model: modelName }, { apiVersion: 'v1beta' });
             result = await model.generateContent(promptText);
             success = true;
             console.log(`Success with model: ${modelName}`);
             break; 
           } catch (err) {
-            console.warn(`Model ${modelName} failed: Status ${err.status || 'Unknown'} - ${err.message?.slice(0, 100)}`);
+            lastError = `Status ${err.status} - ${err.message?.slice(0, 150)}`;
+            console.warn(`Model ${modelName} failed: ${lastError}`);
           }
         }
 
         if (!success) {
-          throw new Error('All Gemini model variants failed (check API key or region).');
+          throw new Error(lastError);
         }
 
         const response = await result.response;
@@ -166,11 +167,17 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         if (outJson?.advice) return res.json(outJson);
       } catch (apiErr) {
         console.error('GEMINI_ERROR:', apiErr.message);
-        console.warn('AI Advisor unavailable, using rule-based fallback.');
+        
+        // Return the error directly to the frontend/API for immediate debugging
+        const fallback = ruleBasedAdvice(plan, aqi, temp, crowd, noise, stress);
+        return res.json({
+            ...fallback,
+            debugError: `AI Blocked: ${apiErr.message}`
+        });
       }
     }
 
-    // Rule-based fallback
+    // Rule-based fallback (if no key is set at all)
     return res.json(ruleBasedAdvice(plan, aqi, temp, crowd, noise, stress));
 
   } catch (error) {
