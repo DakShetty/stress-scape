@@ -127,13 +127,23 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
 
         // Attempt generation with a fallback model strategy
         let result;
-        try {
-          const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
-          result = await model.generateContent(promptText);
-        } catch (flashErr) {
-          console.warn('Gemini 1.5 Flash 404, trying Gemini Pro fallback...');
-          const modelPro = ai.getGenerativeModel({ model: 'gemini-pro' });
-          result = await modelPro.generateContent(promptText);
+        const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'gemini-1.0-pro'];
+        let success = false;
+
+        for (const modelName of modelsToTry) {
+          try {
+            console.log(`Trying Gemini model: ${modelName}...`);
+            const model = ai.getGenerativeModel({ model: modelName });
+            result = await model.generateContent(promptText);
+            success = true;
+            break; 
+          } catch (err) {
+            console.warn(`Model ${modelName} failed: ${err.message?.slice(0, 50)}`);
+          }
+        }
+
+        if (!success) {
+          throw new Error('All Gemini model variants failed (404 or Quota).');
         }
 
         const response = await result.response;
