@@ -120,11 +120,12 @@ Current Sensor Context (Live WAQI/TomTom data):
 - People Density: ${crowd}%
 - Noise Level: ${noise} dB
 - Calculated Stress Index: ${stress}/100
+- Request Timestamp: ${new Date().toISOString()}
 
 User's Plan: "${plan}"
 
 Analyze the variables and provide a UNIQUE, empathetic, and highly practical health recommendation. 
-Avoid generic phrases. Use a professional yet conversational tone.
+Avoid generic phrases. Use a professional yet conversational tone. Ensure the advice varies from previous queries.
 Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk": "Low" | "Medium" | "High"}`;
 
         // Attempt generation with a broader fallback model strategy
@@ -140,7 +141,10 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
         for (const modelName of modelsToTry) {
           try {
             console.log(`Trying Gemini model: ${modelName}...`);
-            const model = ai.getGenerativeModel({ model: modelName });
+            const model = ai.getGenerativeModel({ 
+                model: modelName,
+                generationConfig: { temperature: 0.85 }
+            });
             result = await model.generateContent(promptText);
             success = true;
             console.log(`Success with model: ${modelName}`);
