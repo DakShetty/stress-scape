@@ -137,7 +137,9 @@ Respond ONLY as a JSON object: {"advice": "your personalized advice here", "risk
 
         if (outJson?.advice) return res.json(outJson);
       } catch (apiErr) {
-        console.warn('Gemini unavailable, using rule-based fallback:', apiErr?.message?.slice(0, 80));
+        console.error('GEMINI_ERROR:', apiErr.message);
+        if (apiErr.stack) console.error(apiErr.stack);
+        console.warn('Gemini unavailable, using rule-based fallback.');
       }
     }
 
