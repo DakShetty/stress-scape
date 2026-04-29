@@ -66,12 +66,12 @@ export default function SmartAdvisor({ locations }) {
   };
 
   return (
-    <div className="flex flex-col rounded-2xl border border-white/10 bg-ink-900/60 backdrop-blur-xl shadow-xl shadow-black/30 overflow-hidden h-[500px] transition-all hover:border-white/20">
-      <div className="bg-ink-900/80 backdrop-blur-md border-b border-white/10 p-4 shrink-0 shadow-sm z-10">
-        <h2 className="font-display text-sm font-semibold text-white flex items-center gap-2">
+    <div className="flex flex-col rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft overflow-hidden h-[500px] transition-all hover:border-slate-300">
+      <div className="bg-white/90 backdrop-blur-md border-b border-slate-200/60 p-4 shrink-0 shadow-sm z-10">
+        <h2 className="font-display text-sm font-bold text-slate-800 flex items-center gap-2">
           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-600"></span>
           </span>
           AI Smart Advisor
         </h2>
@@ -80,7 +80,7 @@ export default function SmartAdvisor({ locations }) {
           <select 
             value={selectedLocId} 
             onChange={e => setSelectedLocId(e.target.value)}
-            className="w-full mt-3 rounded-lg border border-white/10 bg-ink-950 px-3 py-2 text-xs text-white outline-none focus:border-accent"
+            className="w-full mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 outline-none focus:border-indigo-500"
           >
             {locations.map(loc => (
               <option key={loc.id || loc._id} value={loc.id || loc._id}>
@@ -89,23 +89,23 @@ export default function SmartAdvisor({ locations }) {
             ))}
           </select>
         ) : (
-          <p className="mt-2 text-xs text-mist/60">No locations loaded.</p>
+          <p className="mt-2 text-xs text-slate-500">No locations loaded.</p>
         )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 font-sans text-sm pb-0">
         {messages.length === 0 && (
-          <p className="text-mist/50 text-center text-xs mt-10">Select an area and explicitly declare your plan to get AI health & safety advice.</p>
+          <p className="text-slate-400 text-center text-xs mt-10">Select an area and explicitly declare your plan to get AI health & safety advice.</p>
         )}
         
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex flex-col animate-message-in ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-            <span className="text-[10px] text-mist/40 mb-1 ml-1 font-medium tracking-wide uppercase">{msg.role === 'user' ? 'You' : 'Advisor'}</span>
+            <span className="text-[10px] text-slate-400 mb-1 ml-1 font-medium tracking-wide uppercase">{msg.role === 'user' ? 'You' : 'Advisor'}</span>
             
-            <div className={`p-3 rounded-2xl max-w-[90%] leading-relaxed shadow-md ${
+            <div className={`p-3 rounded-2xl max-w-[90%] leading-relaxed shadow-sm ${
               msg.role === 'user' 
-                ? 'bg-gradient-to-br from-accent to-accent-dim text-white rounded-tr-sm shadow-accent/20' 
-                : 'bg-ink-900/80 backdrop-blur-sm border border-white/10 text-mist rounded-tl-sm'
+                ? 'bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-tr-sm shadow-indigo-500/20' 
+                : 'bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-700 rounded-tl-sm'
             }`}>
               {msg.content}
             </div>
@@ -119,13 +119,13 @@ export default function SmartAdvisor({ locations }) {
         ))}
         {isLoading && (
           <div className="flex flex-col items-start animate-message-in">
-             <span className="text-[10px] text-mist/40 mb-1 ml-1 font-medium tracking-wide uppercase">Advisor</span>
-             <div className="p-3 bg-ink-900/80 backdrop-blur-sm border border-white/10 rounded-2xl rounded-tl-sm text-mist flex gap-2 items-center shadow-md">
+             <span className="text-[10px] text-slate-400 mb-1 ml-1 font-medium tracking-wide uppercase">Advisor</span>
+             <div className="p-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl rounded-tl-sm text-slate-600 flex gap-2 items-center shadow-sm">
                 <span className="text-xs">Analyzing area</span>
                 <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-accent/60 rounded-full animate-bounce"></span>
-                  <span className="w-1.5 h-1.5 bg-accent/80 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                 </div>
              </div>
           </div>
@@ -133,20 +133,20 @@ export default function SmartAdvisor({ locations }) {
         <div ref={endOfMessagesRef} className="h-4" />
       </div>
 
-      <div className="p-4 shrink-0 bg-ink-950/80 backdrop-blur-md border-t border-white/5 mt-auto z-10">
+      <div className="p-4 shrink-0 bg-slate-50/80 backdrop-blur-md border-t border-slate-200/60 mt-auto z-10">
         <form onSubmit={sendMessage} className="relative group">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="e.g., I want to jog here..."
-            className="w-full rounded-xl border border-white/10 bg-ink-900/80 px-4 py-3 pr-24 text-sm text-white placeholder-mist/30 outline-none transition-all focus:border-accent focus:bg-ink-900 focus:ring-1 focus:ring-accent/50"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-24 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 shadow-sm"
             disabled={isLoading || !locations?.length}
           />
           <button 
             type="submit" 
             disabled={isLoading || !input.trim() || !locations?.length}
-            className="absolute right-1.5 top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-accent to-accent-dim px-4 text-xs font-bold text-white transition-all duration-300 disabled:opacity-40 hover:shadow-glow-violet active:scale-95"
+            className="absolute right-1.5 top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-4 text-xs font-bold text-white transition-all duration-300 disabled:opacity-40 hover:shadow-glow-violet active:scale-95"
           >
             Send
           </button>

@@ -9,26 +9,25 @@ export default {
       },
       colors: {
         ink: {
-          950: '#07090f',
-          900: '#0d1117',
-          800: '#161c26',
-          700: '#1e2736',
+          950: '#f8fafc', // slate-50
+          900: '#f1f5f9', // slate-100
+          800: '#e2e8f0', // slate-200
+          700: '#cbd5e1', // slate-300
         },
-        mist: '#dde6f0',
-        // New vibrant accent: electric violet-indigo
+        mist: '#334155', // slate-700
+        // Vibrant Indigo for light mode primary
         accent: {
-          DEFAULT: '#7c3aed',
-          dim: '#6d28d9',
-          glow: '#a78bfa',
-          light: '#ede9fe',
+          DEFAULT: '#4f46e5',
+          dim: '#4338ca',
+          glow: '#6366f1',
+          light: '#e0e7ff',
         },
-        // Secondary accent: cyan
+        // Teal secondary
         cyan: {
-          DEFAULT: '#06b6d4',
-          dim: '#0891b2',
-          glow: '#67e8f9',
+          DEFAULT: '#0d9488',
+          dim: '#0f766e',
+          glow: '#14b8a6',
         },
-        // Hot orange for high-risk highlights
         hot: {
           DEFAULT: '#f97316',
           dim: '#ea580c',
@@ -36,7 +35,7 @@ export default {
         stress: { low: '#10b981', mid: '#f59e0b', high: '#ef4444' },
       },
       backgroundImage: {
-        'grid-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+        'grid-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2394a3b8' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out forwards',
@@ -73,9 +72,10 @@ export default {
         },
       },
       boxShadow: {
-        'glow-violet': '0 0 20px rgba(124, 58, 237, 0.3)',
-        'glow-cyan': '0 0 20px rgba(6, 182, 212, 0.3)',
-        'glow-accent': '0 0 30px rgba(124, 58, 237, 0.15)',
+        'glow-violet': '0 4px 20px rgba(79, 70, 229, 0.25)',
+        'glow-cyan': '0 4px 20px rgba(13, 148, 136, 0.25)',
+        'glow-accent': '0 4px 30px rgba(79, 70, 229, 0.15)',
+        'soft': '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
       },
     },
   },

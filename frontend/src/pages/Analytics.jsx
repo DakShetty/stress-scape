@@ -43,13 +43,13 @@ const StressBar = (props) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-white/10 bg-ink-900/95 backdrop-blur-md p-3 shadow-xl text-xs">
-      <p className="font-semibold text-white mb-2">{label}</p>
+    <div className="rounded-xl border border-slate-200 bg-white/95 backdrop-blur-md p-3 shadow-xl text-xs">
+      <p className="font-semibold text-slate-800 mb-2">{label}</p>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-mist/70">{p.name}:</span>
-          <span className="font-medium text-white">{typeof p.value === 'number' ? p.value.toFixed(1) : p.value}</span>
+          <span className="text-slate-500">{p.name}:</span>
+          <span className="font-medium text-slate-800">{typeof p.value === 'number' ? p.value.toFixed(1) : p.value}</span>
         </div>
       ))}
     </div>
@@ -57,18 +57,18 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 // KPI Card with animated count
-function KpiCard({ label, value, unit = '', icon, color = 'text-white', sub }) {
+function KpiCard({ label, value, unit = '', icon, color = 'text-slate-800', sub }) {
   const animated = useCountUp(typeof value === 'number' ? value : 0);
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-ink-900/80 to-ink-950/80 backdrop-blur-sm p-5 flex flex-col gap-1 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/30 group">
+    <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm p-5 flex flex-col gap-1 hover:border-slate-300 transition-all duration-300 hover:shadow-soft group">
       <div className="flex items-center justify-between mb-1">
-        <p className="text-xs font-medium uppercase tracking-widest text-mist/40">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400">{label}</p>
         {icon && <span className="text-lg opacity-60 group-hover:opacity-100 transition-opacity">{icon}</span>}
       </div>
       <p className={`font-display text-3xl font-bold ${color}`}>
         {animated}{unit}
       </p>
-      {sub && <p className="text-xs text-mist/40 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
     </div>
   );
 }
@@ -164,38 +164,68 @@ export default function Analytics() {
 
   const activeMeta = metricOptions.find(m => m.key === activeMetric);
 
+  const exportCSV = () => {
+    if (!series?.length) return;
+    const headers = ['Location Name', 'Stress Score', 'AQI', 'Temperature', 'Crowd Density (%)', 'Noise Level (dB)'];
+    const rows = series.map(s => [
+      `"${s.name}"`,
+      Math.round(s.stressScore),
+      s.aqi,
+      s.temperature,
+      s.crowdDensity,
+      s.noiseLevel
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `StressScape_Data_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8 animate-fade-in">
       {/* Header */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-accent mb-1">Live Data Insights</p>
-        <h1 className="font-display text-3xl font-bold text-white">Urban Analytics</h1>
-        <p className="mt-1 text-sm text-mist/60 max-w-2xl">
-          Real-time aggregate statistics across {summary.locationCount} monitored zones in Maharashtra.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 mb-1">Live Data Insights</p>
+          <h1 className="font-display text-3xl font-bold text-slate-900">Urban Analytics</h1>
+          <p className="mt-1 text-sm text-slate-500 max-w-2xl">
+            Real-time aggregate statistics across {summary.locationCount} monitored zones in Maharashtra.
+          </p>
+        </div>
+        <button
+          onClick={exportCSV}
+          className="shrink-0 rounded-lg bg-white border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition-all hover:border-indigo-300 hover:text-indigo-600 active:scale-95 flex items-center gap-2"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
       </div>
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <div className="col-span-2 sm:col-span-1 lg:col-span-2 rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/10 to-teal-900/10 p-5 flex flex-col justify-between hover:border-accent/40 transition-all duration-300">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-accent">City Health Index</p>
+        <div className="col-span-2 sm:col-span-1 lg:col-span-2 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-teal-50 p-5 flex flex-col justify-between shadow-soft hover:border-indigo-200 transition-all duration-300">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">City Health Index</p>
           <div>
-            <p className="font-display text-6xl font-bold text-white leading-none mt-2">{cityHealth}</p>
-            <div className="mt-3 h-2 rounded-full bg-white/5 overflow-hidden">
+            <p className="font-display text-6xl font-bold text-slate-800 leading-none mt-2">{cityHealth}</p>
+            <div className="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-1000"
                 style={{
                   width: `${cityHealth}%`,
-                  background: cityHealth > 60 ? '#22c55e' : cityHealth > 40 ? '#f59e0b' : '#ef4444',
+                  background: cityHealth > 60 ? '#10b981' : cityHealth > 40 ? '#f59e0b' : '#ef4444',
                 }}
               />
             </div>
-            <p className="mt-1.5 text-xs text-mist/50">{cityHealth > 60 ? 'Overall healthy conditions' : cityHealth > 40 ? 'Moderate urban stress' : 'High urban stress detected'}</p>
+            <p className="mt-1.5 text-xs text-slate-500 font-medium">{cityHealth > 60 ? 'Overall healthy conditions' : cityHealth > 40 ? 'Moderate urban stress' : 'High urban stress detected'}</p>
           </div>
         </div>
         <KpiCard label="Locations" value={summary.locationCount} icon="📍" sub="Monitored zones" />
-        <KpiCard label="Avg Stress" value={summary.averageStress} icon="📊" color={summary.averageStress > 60 ? 'text-red-400' : summary.averageStress > 40 ? 'text-amber-400' : 'text-emerald-400'} sub="out of 100" />
-        <KpiCard label="Avg AQI" value={summary.aqi.avg} icon="💨" color={summary.aqi.avg > 150 ? 'text-red-400' : summary.aqi.avg > 100 ? 'text-amber-400' : 'text-emerald-400'} sub={`Range: ${summary.aqi.min}–${summary.aqi.max}`} />
+        <KpiCard label="Avg Stress" value={summary.averageStress} icon="📊" color={summary.averageStress > 60 ? 'text-red-500' : summary.averageStress > 40 ? 'text-amber-500' : 'text-emerald-500'} sub="out of 100" />
+        <KpiCard label="Avg AQI" value={summary.aqi.avg} icon="💨" color={summary.aqi.avg > 150 ? 'text-red-500' : summary.aqi.avg > 100 ? 'text-amber-500' : 'text-emerald-500'} sub={`Range: ${summary.aqi.min}–${summary.aqi.max}`} />
         <KpiCard label="Avg Temp" value={summary.temperature.avg} unit="°C" icon="🌡️" sub={`High: ${summary.temperature.max}°C`} />
         <KpiCard label="Avg Noise" value={summary.noise.avg} unit=" dB" icon="🔊" sub={`Peak: ${summary.noise.max} dB`} />
       </div>
@@ -203,9 +233,9 @@ export default function Analytics() {
       {/* Charts Row 1 */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Pie */}
-        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
-          <h2 className="text-sm font-semibold text-white mb-1">Risk Distribution</h2>
-          <p className="text-xs text-mist/40 mb-4">Across all monitored zones</p>
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
+          <h2 className="text-sm font-bold text-slate-800 mb-1">Risk Distribution</h2>
+          <p className="text-xs text-slate-500 mb-4">Across all monitored zones</p>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -214,7 +244,7 @@ export default function Analytics() {
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
                 <Legend
-                  formatter={(value) => <span style={{ color: '#94a3b8', fontSize: 11 }}>{value}</span>}
+                  formatter={(value) => <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -223,37 +253,37 @@ export default function Analytics() {
             {pieData.map((d, i) => (
               <div key={i} className="rounded-lg py-2" style={{ background: PIE_COLORS[i] + '15' }}>
                 <p className="text-lg font-bold" style={{ color: PIE_COLORS[i] }}>{d.value}</p>
-                <p className="text-[10px] text-mist/50">{d.name}</p>
+                <p className="text-[10px] text-slate-500 font-medium">{d.name}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Top hotspots bar chart */}
-        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6 lg:col-span-2">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-white">Top Stress Hotspots</h2>
+            <h2 className="text-sm font-bold text-slate-800">Top Stress Hotspots</h2>
             <div className="flex gap-1">
               {metricOptions.map(m => (
                 <button
                   key={m.key}
                   onClick={() => setActiveMetric(m.key)}
-                  className={`rounded px-2 py-1 text-[10px] font-semibold transition-all ${activeMetric === m.key ? 'text-white' : 'text-mist/30 hover:text-mist/60'}`}
-                  style={activeMetric === m.key ? { background: m.color + '30', color: m.color } : {}}
+                  className={`rounded px-2 py-1 text-[10px] font-bold transition-all ${activeMetric === m.key ? 'text-slate-800 shadow-sm bg-white border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+                  style={activeMetric === m.key ? { color: m.color } : {}}
                 >
                   {m.label.split(' ')[0]}
                 </button>
               ))}
             </div>
           </div>
-          <p className="text-xs text-mist/40 mb-4">Sorted by highest {activeMeta?.label}</p>
+          <p className="text-xs text-slate-500 mb-4">Sorted by highest {activeMeta?.label}</p>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ top: 4, right: 8, left: -10, bottom: 40 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} angle={-30} textAnchor="end" interval={0} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 10 }} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} angle={-30} textAnchor="end" interval={0} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
                 <Bar dataKey={activeMetric} name={activeMeta?.label} radius={[4, 4, 0, 0]} shape={(props) => <StressBar {...props} stress={props[activeMetric] ?? props.stress} fill={activeMeta?.color} />} fill={activeMeta?.color} />
               </BarChart>
             </ResponsiveContainer>
@@ -264,14 +294,14 @@ export default function Analytics() {
       {/* Charts Row 2: Radar + Comparison */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Radar chart */}
-        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-white">Zone Profile Radar</h2>
-              <p className="text-xs text-mist/40">Multi-dimensional health fingerprint</p>
+              <h2 className="text-sm font-bold text-slate-800">Zone Profile Radar</h2>
+              <p className="text-xs text-slate-500">Multi-dimensional health fingerprint</p>
             </div>
             <select
-              className="bg-ink-950 border border-white/10 text-xs text-white px-2 py-1.5 rounded-lg outline-none focus:border-accent"
+              className="border border-slate-200 text-xs text-slate-700 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm"
               onChange={e => setRadarLoc(series.find(s => s.name === e.target.value) || null)}
               defaultValue={series[0]?.name || ''}
             >
@@ -281,9 +311,9 @@ export default function Analytics() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={radarData} margin={{ top: 8, right: 30, bottom: 8, left: 30 }}>
-                <PolarGrid stroke="rgba(255,255,255,0.06)" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill: '#64748b', fontSize: 11 }} />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#475569', fontSize: 9 }} />
+                <PolarGrid stroke="rgba(0,0,0,0.08)" />
+                <PolarAngleAxis dataKey="metric" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} />
+                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 9 }} />
                 <Radar name="Zone" dataKey="value" stroke="#0d9488" fill="#0d9488" fillOpacity={0.25} strokeWidth={2} />
                 <Tooltip content={<CustomTooltip />} />
               </RadarChart>
@@ -292,18 +322,18 @@ export default function Analytics() {
         </div>
 
         {/* Comparison tool */}
-        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-white">Zone Comparison</h2>
-              <p className="text-xs text-mist/40">Side-by-side metric analysis</p>
+              <h2 className="text-sm font-bold text-slate-800">Zone Comparison</h2>
+              <p className="text-xs text-slate-500">Side-by-side metric analysis</p>
             </div>
             <div className="flex gap-2">
-              <select className="bg-ink-950 border border-white/10 text-xs text-white px-2 py-1.5 rounded-lg outline-none focus:border-accent" value={compareA} onChange={e => setCompareA(e.target.value)}>
+              <select className="border border-slate-200 text-xs text-slate-700 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm" value={compareA} onChange={e => setCompareA(e.target.value)}>
                 {series.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
               </select>
-              <span className="text-mist/30 self-center text-xs font-bold">vs</span>
-              <select className="bg-ink-950 border border-white/10 text-xs text-white px-2 py-1.5 rounded-lg outline-none focus:border-accent" value={compareB} onChange={e => setCompareB(e.target.value)}>
+              <span className="text-slate-400 self-center text-xs font-bold">vs</span>
+              <select className="border border-slate-200 text-xs text-slate-700 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm" value={compareB} onChange={e => setCompareB(e.target.value)}>
                 {series.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
               </select>
             </div>
@@ -311,13 +341,13 @@ export default function Analytics() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={compareData} layout="vertical" margin={{ left: 10, right: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
-                <XAxis type="number" domain={[0, 200]} tick={{ fill: '#64748b', fontSize: 10 }} />
-                <YAxis type="category" dataKey="name" tick={{ fill: '#94a3b8', fontSize: 10 }} width={80} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-                <Legend formatter={(v) => <span style={{ color: '#94a3b8', fontSize: 11 }}>{v}</span>} />
-                <Bar dataKey="stressScore" name="Stress" fill="#e11d48" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="aqi" name="AQI" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" horizontal={false} />
+                <XAxis type="number" domain={[0, 200]} tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} />
+                <YAxis type="category" dataKey="name" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} width={80} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
+                <Legend formatter={(v) => <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>{v}</span>} />
+                <Bar dataKey="stressScore" name="Stress" fill="#ef4444" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="aqi" name="AQI" fill="#4f46e5" radius={[0, 4, 4, 0]} />
                 <Bar dataKey="temperature" name="Temp °C" fill="#f59e0b" radius={[0, 4, 4, 0]} />
                 <Bar dataKey="noiseLevel" name="Noise dB" fill="#0d9488" radius={[0, 4, 4, 0]} />
               </BarChart>
@@ -327,14 +357,14 @@ export default function Analytics() {
       </div>
 
       {/* 24h Trend chart */}
-      <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
+      <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <div>
-            <h2 className="text-sm font-semibold text-white">24-Hour Stress Forecast</h2>
-            <p className="text-xs text-mist/40">Hourly simulation based on urban temporal patterns</p>
+            <h2 className="text-sm font-bold text-slate-800">24-Hour Stress Forecast</h2>
+            <p className="text-xs text-slate-500">Hourly simulation based on urban temporal patterns</p>
           </div>
           <select
-            className="bg-ink-950 border border-white/10 text-xs text-white px-3 py-2 rounded-lg outline-none focus:border-accent"
+            className="border border-slate-200 text-xs text-slate-700 px-3 py-2 rounded-lg outline-none focus:border-indigo-500 shadow-sm"
             onChange={e => setTrendLoc(e.target.value)}
           >
             <option value="">Select a location…</option>
@@ -345,24 +375,24 @@ export default function Analytics() {
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trends} margin={{ top: 8, right: 16, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="hour" tick={{ fill: '#475569', fontSize: 10 }} interval={1} />
-                <YAxis domain={[0, 100]} tick={{ fill: '#475569', fontSize: 10 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                <XAxis dataKey="hour" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} interval={1} />
+                <YAxis domain={[0, 100]} tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend formatter={(v) => <span style={{ color: '#94a3b8', fontSize: 11 }}>{v}</span>} />
+                <Legend formatter={(v) => <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>{v}</span>} />
                 <ReferenceLine y={65} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'High Risk', fill: '#ef4444', fontSize: 9, position: 'right' }} />
-                <ReferenceLine y={35} stroke="#22c55e" strokeDasharray="4 4" label={{ value: 'Low Risk', fill: '#22c55e', fontSize: 9, position: 'right' }} />
-                <Line type="monotone" dataKey="stressScore" stroke="#e11d48" strokeWidth={2.5} dot={false} name="Stress Score" />
+                <ReferenceLine y={35} stroke="#10b981" strokeDasharray="4 4" label={{ value: 'Low Risk', fill: '#10b981', fontSize: 9, position: 'right' }} />
+                <Line type="monotone" dataKey="stressScore" stroke="#ef4444" strokeWidth={2.5} dot={false} name="Stress Score" />
                 <Line type="monotone" dataKey="crowdDensity" stroke="#0d9488" strokeWidth={1.5} dot={false} name="Crowd %" strokeDasharray="6 3" />
-                <Line type="monotone" dataKey="noiseLevel" stroke="#94a3b8" strokeWidth={1.5} dot={false} name="Noise dB" strokeDasharray="3 3" />
-                <Line type="monotone" dataKey="aqi" stroke="#6366f1" strokeWidth={1} dot={false} name="AQI" />
+                <Line type="monotone" dataKey="noiseLevel" stroke="#64748b" strokeWidth={1.5} dot={false} name="Noise dB" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="aqi" stroke="#4f46e5" strokeWidth={1.5} dot={false} name="AQI" />
               </LineChart>
             </ResponsiveContainer>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-40 gap-3">
-            <div className="text-4xl opacity-20">📈</div>
-            <p className="text-xs text-mist/30 italic">Select a location above to visualize the 24-hour stress cycle</p>
+            <div className="text-4xl opacity-40">📈</div>
+            <p className="text-xs text-slate-400 font-medium italic">Select a location above to visualize the 24-hour stress cycle</p>
           </div>
         )}
       </div>

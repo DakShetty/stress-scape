@@ -149,21 +149,21 @@ export default function MapDashboard() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 animate-fade-in">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between animate-slide-up">
         <div>
-          <h1 className="font-display text-2xl font-bold text-white sm:text-3xl">StressScape Dashboard</h1>
-          <p className="mt-1 max-w-2xl text-sm text-mist/70">
+          <h1 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl">StressScape Dashboard</h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">
             Combined AQI, heat stress, and crowding — aligned with MPCB-style AQI bands and field-style
             crowd observations. Toggle layers and click markers for details.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-ink-900 px-3 py-2 text-xs text-mist/70 hover:text-mist transition-colors">
+          <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 hover:text-slate-800 transition-colors shadow-sm">
             <input type="checkbox" checked={live} onChange={(e) => setLive(e.target.checked)} />
             Auto-refresh (30s)
           </label>
           <button
             type="button"
             onClick={load}
-            className="rounded-xl border border-white/10 bg-ink-900 px-4 py-2 text-xs font-semibold text-mist/70 transition-all duration-300 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105 active:scale-95"
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-300 hover:scale-105 active:scale-95 shadow-sm"
           >
             ↻ Refresh
           </button>
@@ -172,14 +172,14 @@ export default function MapDashboard() {
               <button
                 type="button"
                 onClick={runSimulate}
-                className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-semibold text-amber-300 transition-all duration-300 hover:bg-amber-500/15 hover:shadow-[0_0_12px_rgba(245,158,11,0.2)] hover:scale-105 active:scale-95"
+                className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-600 transition-all duration-300 hover:bg-amber-100 hover:scale-105 active:scale-95 shadow-sm"
               >
                 ⚡ Simulate
               </button>
               <button
                 type="button"
                 onClick={runSyncManual}
-                className="rounded-xl border border-cyan/30 bg-cyan/10 px-4 py-2 text-xs font-semibold text-cyan-glow transition-all duration-300 hover:bg-cyan/15 hover:shadow-glow-cyan hover:scale-105 active:scale-95"
+                className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-2 text-xs font-bold text-teal-700 transition-all duration-300 hover:bg-teal-100 hover:scale-105 active:scale-95 shadow-sm"
               >
                 🔗 Sync Live
               </button>
@@ -188,7 +188,7 @@ export default function MapDashboard() {
           <button
             type="button"
             onClick={tryWeather}
-            className="rounded-xl border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-semibold text-accent-glow transition-all duration-300 hover:bg-accent/15 hover:shadow-glow-violet hover:scale-105 active:scale-95"
+            className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-xs font-bold text-indigo-700 transition-all duration-300 hover:bg-indigo-100 hover:scale-105 active:scale-95 shadow-sm"
           >
             🌤 Weather
           </button>
@@ -208,38 +208,38 @@ export default function MapDashboard() {
       )}
 
       {weatherNote && typeof weatherNote === 'object' ? (
-        <div className="mt-4 flex items-center gap-6 rounded-2xl border border-white/10 bg-gradient-to-br from-ink-900 to-ink-950 p-6 shadow-xl animate-slide-up ring-1 ring-white/5">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 text-4xl shadow-inner shadow-white/5">
+        <div className="mt-4 flex items-center gap-6 rounded-2xl border border-slate-200/60 bg-white/70 p-6 shadow-soft backdrop-blur-xl animate-slide-up">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-4xl shadow-inner border border-indigo-100">
             {weatherNote.description.includes('cloud') ? '☁️' : 
              weatherNote.description.includes('rain') ? '🌧️' : 
              weatherNote.description.includes('haze') || weatherNote.description.includes('smoke') ? '🌫️' : '☀️'}
           </div>
           <div className="flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-accent mb-1">Live Environment</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 mb-1">Live Environment</p>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-display font-bold text-white">{weatherNote.temperature}°C</span>
-              <span className="text-xs text-mist/60 font-medium">Feels like {weatherNote.feelsLike}°C</span>
+              <span className="text-4xl font-display font-bold text-slate-800">{weatherNote.temperature}°C</span>
+              <span className="text-xs text-slate-500 font-medium">Feels like {weatherNote.feelsLike}°C</span>
             </div>
-            <p className="mt-0.5 text-sm font-medium text-mist/80 capitalize flex items-center gap-1.5">
+            <p className="mt-0.5 text-sm font-medium text-slate-600 capitalize flex items-center gap-1.5">
                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                {weatherNote.description}
             </p>
           </div>
-          <div className="hidden sm:block border-l border-white/10 pl-6 text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-mist/30 mb-1">Humidity</p>
-            <p className="text-2xl font-display font-bold text-white">{weatherNote.humidity}<span className="text-xs text-mist/40 ml-0.5">%</span></p>
+          <div className="hidden sm:block border-l border-slate-200 pl-6 text-right">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Humidity</p>
+            <p className="text-2xl font-display font-bold text-slate-800">{weatherNote.humidity}<span className="text-xs text-slate-400 ml-0.5">%</span></p>
           </div>
         </div>
       ) : weatherNote && (
-        <div className="mt-4 rounded-xl border border-white/10 bg-ink-900 p-4 text-xs text-mist/60 italic flex items-center gap-2">
-          <span className="text-accent">ℹ️</span> {weatherNote}
+        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-500 italic flex items-center gap-2 shadow-sm">
+          <span className="text-indigo-600">ℹ️</span> {weatherNote}
         </div>
       )}
 
       <div className="mt-6 flex flex-col gap-6 xl:flex-row">
         <div className="flex-1 space-y-4 animate-slide-up" style={{ animationDelay: '100ms' }}>
-          <div className="rounded-2xl border border-white/10 bg-ink-900/40 backdrop-blur-xl p-4 shadow-lg shadow-black/20">
-            <p className="text-xs font-semibold uppercase tracking-wider text-mist/50">Layers</p>
+          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl p-4 shadow-soft">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Layers</p>
             <div className="mt-3 flex flex-wrap gap-3">
               {[
                 ['aqi', 'AQI'],
@@ -250,28 +250,29 @@ export default function MapDashboard() {
               ].map(([key, label]) => (
                 <label
                   key={key}
-                  className={`group flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all ${
+                  className={`group flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
                     key === 'stress'
-                      ? 'border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 hover:border-rose-500/40'
+                      ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 hover:border-rose-300 shadow-sm'
                       : key === 'noise'
-                      ? 'border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 hover:border-indigo-500/40'
-                      : 'border-white/10 bg-ink-950/80 hover:bg-white/5 hover:border-white/20'
+                      ? 'border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-sm'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={layers[key]}
                     onChange={() => toggle(key)}
+                    className="accent-indigo-600"
                   />
                   {label}
                 </label>
               ))}
             </div>
-            <p className="mt-3 text-xs text-mist/50">
+            <p className="mt-3 text-xs text-slate-500">
               Green / yellow / red on the stress layer: low / medium / high composite stress.
             </p>
           </div>
-          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-accent/5 ring-1 ring-white/10">
+          <div className="rounded-2xl overflow-hidden shadow-soft border border-slate-200">
             <StressMap
               locations={locations}
               layers={layers}
@@ -284,6 +285,35 @@ export default function MapDashboard() {
         </div>
         <aside className="w-full shrink-0 space-y-4 xl:w-80 animate-slide-up" style={{ animationDelay: '200ms' }}>
           <SmartAdvisor locations={locations} />
+
+          {/* NEW FEATURE: Alerts Feed */}
+          <div className="rounded-2xl border border-rose-200/60 bg-rose-50/50 backdrop-blur-xl shadow-soft overflow-hidden p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+              </div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-rose-700">Live Stress Alerts</h3>
+            </div>
+            <div className="space-y-2">
+              {locations.filter(loc => loc.stressScore > 75 || loc.aqi > 150).length > 0 ? (
+                locations
+                  .filter(loc => loc.stressScore > 75 || loc.aqi > 150)
+                  .sort((a, b) => b.stressScore - a.stressScore)
+                  .slice(0, 4)
+                  .map(loc => (
+                    <div key={loc.id || loc._id} className="rounded-xl bg-white border border-rose-100 p-3 shadow-sm">
+                      <p className="font-bold text-slate-800 text-xs truncate mb-1">{loc.name}</p>
+                      <p className="text-[10px] font-medium text-rose-600">
+                        {loc.stressScore > 75 ? `High Stress (${Math.round(loc.stressScore)})` : `Poor AQI (${Math.round(loc.aqi)})`}
+                      </p>
+                    </div>
+                  ))
+              ) : (
+                <p className="text-xs text-slate-500 italic p-2">No critical alerts right now. City conditions are normal.</p>
+              )}
+            </div>
+          </div>
         </aside>
       </div>
 
