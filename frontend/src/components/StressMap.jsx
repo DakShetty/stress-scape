@@ -54,25 +54,25 @@ function PopupBody({ loc, onSave, token, savedIds, prediction }) {
   const saved = savedIds?.has(loc.id || loc._id);
   return (
     <div className="min-w-[200px] space-y-2 p-1 text-sm">
-      <p className="font-display font-semibold text-white">{loc.name}</p>
-      <dl className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-mist/90">
-        <dt className="text-mist/60">AQI</dt>
+      <p className="font-display font-semibold text-slate-900 dark:text-white">{loc.name}</p>
+      <dl className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-slate-700 dark:text-slate-300">
+        <dt className="text-slate-500 dark:text-slate-400">AQI</dt>
         <dd>{loc.aqi}</dd>
-        <dt className="text-mist/60">Temp °C</dt>
+        <dt className="text-slate-500 dark:text-slate-400">Temp °C</dt>
         <dd>{loc.temperature}</dd>
-        <dt className="text-mist/60">Crowd</dt>
+        <dt className="text-slate-500 dark:text-slate-400">Crowd</dt>
         <dd>{loc.crowdDensity}%</dd>
-        <dt className="text-mist/60">Noise</dt>
+        <dt className="text-slate-500 dark:text-slate-400">Noise</dt>
         <dd>{loc.noiseLevel || 0} dB</dd>
-        <dt className="text-mist/60">Stress</dt>
+        <dt className="text-slate-500 dark:text-slate-400">Stress</dt>
         <dd className="font-semibold" style={{ color: loc.stressColor }}>
           {loc.stressScore} ({loc.stressLevel})
         </dd>
       </dl>
       {prediction?.predictedStress != null && (
-        <p className="text-xs text-mist/70">
+        <p className="text-xs text-slate-600 dark:text-slate-400">
           Predicted (1h):{' '}
-          <span className="font-medium text-accent">{prediction.predictedStress}</span>
+          <span className="font-medium text-indigo-600 dark:text-indigo-400">{prediction.predictedStress}</span>
         </p>
       )}
       {token && onSave && (
@@ -109,7 +109,7 @@ export default function StressMap({
 
   if (!locations?.length) {
     return (
-      <div className="flex h-[420px] items-center justify-center rounded-2xl border border-white/10 bg-ink-900 text-mist/60 sm:h-[520px]">
+      <div className="flex h-[420px] items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 sm:h-[520px]">
         No location data loaded.
       </div>
     );
@@ -118,14 +118,14 @@ export default function StressMap({
   return (
     <div className="w-full">
       <div className="mb-3 flex justify-end gap-2">
-        <div className="flex bg-ink-900 border border-white/10 rounded-lg p-1">
+        <div className="flex bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1 transition-colors">
           {Object.keys(mapStyles).map((style) => (
             <button
               key={style}
               type="button"
               onClick={() => setMapStyle(style)}
               className={`rounded px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all ${
-                mapStyle === style ? 'bg-accent text-white' : 'text-mist/40 hover:text-mist/70'
+                mapStyle === style ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               {style}
@@ -136,7 +136,7 @@ export default function StressMap({
           type="button"
           onClick={() => setViewMode('points')}
           className={`rounded-lg px-4 py-2 text-xs font-semibold transition-colors border ${
-            viewMode === 'points' ? 'bg-accent border-accent text-white' : 'bg-ink-900 border-white/10 text-mist/60 hover:text-white'
+            viewMode === 'points' ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           Show Points
@@ -145,18 +145,18 @@ export default function StressMap({
           type="button"
           onClick={() => setViewMode('heatmap')}
           className={`rounded-lg px-4 py-2 text-xs font-semibold transition-colors border ${
-            viewMode === 'heatmap' ? 'bg-accent border-accent text-white' : 'bg-ink-900 border-white/10 text-mist/60 hover:text-white'
+            viewMode === 'heatmap' ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           Show Heatmap
         </button>
       </div>
 
-      <div className="h-[420px] w-full rounded-2xl border border-white/10 sm:h-[520px] overflow-hidden">
+      <div className="h-[420px] w-full rounded-2xl border border-slate-200 dark:border-slate-700 sm:h-[520px] overflow-hidden transition-colors">
         <MapContainer
           center={center}
           zoom={8}
-          className="h-full w-full bg-ink-950"
+          className="h-full w-full bg-slate-100 dark:bg-slate-900"
           scrollWheelZoom
         >
           <TileLayer
