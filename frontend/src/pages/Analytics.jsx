@@ -136,7 +136,7 @@ export default function Analytics() {
     .slice(0, 12)
     .map((s) => ({
       name: s.name.length > 13 ? `${s.name.slice(0, 11)}…` : s.name,
-      stress: Math.round(s.stressScore),
+      stressScore: Math.round(s.stressScore),
       aqi: s.aqi,
       temperature: s.temperature,
       crowdDensity: s.crowdDensity,
