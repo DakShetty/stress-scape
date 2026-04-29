@@ -6,6 +6,7 @@ import {
   CartesianGrid, ReferenceLine,
 } from 'recharts';
 import * as api from '../api/client.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 const PIE_COLORS = ['#22c55e', '#f59e0b', '#ef4444'];
 
@@ -43,13 +44,13 @@ const StressBar = (props) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-slate-200 bg-white/95 backdrop-blur-md p-3 shadow-xl text-xs">
-      <p className="font-semibold text-slate-800 mb-2">{label}</p>
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-3 shadow-xl text-xs transition-colors">
+      <p className="font-semibold text-slate-800 dark:text-slate-100 mb-2">{label}</p>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-slate-500">{p.name}:</span>
-          <span className="font-medium text-slate-800">{typeof p.value === 'number' ? p.value.toFixed(1) : p.value}</span>
+          <span className="text-slate-500 dark:text-slate-400">{p.name}:</span>
+          <span className="font-medium text-slate-800 dark:text-slate-200">{typeof p.value === 'number' ? p.value.toFixed(1) : p.value}</span>
         </div>
       ))}
     </div>
@@ -57,23 +58,24 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 // KPI Card with animated count
-function KpiCard({ label, value, unit = '', icon, color = 'text-slate-800', sub }) {
+function KpiCard({ label, value, unit = '', icon, color = 'text-slate-800 dark:text-slate-100', sub }) {
   const animated = useCountUp(typeof value === 'number' ? value : 0);
   return (
-    <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm p-5 flex flex-col gap-1 hover:border-slate-300 transition-all duration-300 hover:shadow-soft group">
+    <div className="card-glass p-5 flex flex-col gap-1 group">
       <div className="flex items-center justify-between mb-1">
-        <p className="text-xs font-bold uppercase tracking-widest text-slate-400">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{label}</p>
         {icon && <span className="text-lg opacity-60 group-hover:opacity-100 transition-opacity">{icon}</span>}
       </div>
       <p className={`font-display text-3xl font-bold ${color}`}>
         {animated}{unit}
       </p>
-      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{sub}</p>}
     </div>
   );
 }
 
 export default function Analytics() {
+  const { theme } = useTheme();
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [compareA, setCompareA] = useState('');
@@ -82,6 +84,9 @@ export default function Analytics() {
   const [trends, setTrends] = useState([]);
   const [radarLoc, setRadarLoc] = useState(null);
   const [activeMetric, setActiveMetric] = useState('stressScore');
+
+  const chartTextColor = theme === 'dark' ? '#cbd5e1' : '#64748b';
+  const chartGridColor = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
 
   useEffect(() => {
     api.get('/api/analytics/summary')
@@ -190,15 +195,15 @@ export default function Analytics() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 mb-1">Live Data Insights</p>
-          <h1 className="font-display text-3xl font-bold text-slate-900">Urban Analytics</h1>
-          <p className="mt-1 text-sm text-slate-500 max-w-2xl">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1">Live Data Insights</p>
+          <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-slate-100 transition-colors">Urban Analytics</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 max-w-2xl transition-colors">
             Real-time aggregate statistics across {summary.locationCount} monitored zones in Maharashtra.
           </p>
         </div>
         <button
           onClick={exportCSV}
-          className="shrink-0 rounded-lg bg-white border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition-all hover:border-indigo-300 hover:text-indigo-600 active:scale-95 flex items-center gap-2"
+          className="shrink-0 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:text-indigo-600 dark:hover:text-indigo-400 active:scale-95 flex items-center gap-2"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export CSV
@@ -207,11 +212,11 @@ export default function Analytics() {
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <div className="col-span-2 sm:col-span-1 lg:col-span-2 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-teal-50 p-5 flex flex-col justify-between shadow-soft hover:border-indigo-200 transition-all duration-300">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">City Health Index</p>
+        <div className="col-span-2 sm:col-span-1 lg:col-span-2 rounded-2xl border border-indigo-100 dark:border-indigo-900/50 bg-gradient-to-br from-indigo-50 to-teal-50 dark:from-indigo-900/20 dark:to-teal-900/20 p-5 flex flex-col justify-between shadow-soft hover:border-indigo-200 dark:hover:border-indigo-800 transition-all duration-300">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">City Health Index</p>
           <div>
-            <p className="font-display text-6xl font-bold text-slate-800 leading-none mt-2">{cityHealth}</p>
-            <div className="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
+            <p className="font-display text-6xl font-bold text-slate-800 dark:text-slate-100 leading-none mt-2">{cityHealth}</p>
+            <div className="mt-3 h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-1000"
                 style={{
@@ -220,7 +225,7 @@ export default function Analytics() {
                 }}
               />
             </div>
-            <p className="mt-1.5 text-xs text-slate-500 font-medium">{cityHealth > 60 ? 'Overall healthy conditions' : cityHealth > 40 ? 'Moderate urban stress' : 'High urban stress detected'}</p>
+            <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">{cityHealth > 60 ? 'Overall healthy conditions' : cityHealth > 40 ? 'Moderate urban stress' : 'High urban stress detected'}</p>
           </div>
         </div>
         <KpiCard label="Locations" value={summary.locationCount} icon="📍" sub="Monitored zones" />
@@ -233,42 +238,42 @@ export default function Analytics() {
       {/* Charts Row 1 */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Pie */}
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
-          <h2 className="text-sm font-bold text-slate-800 mb-1">Risk Distribution</h2>
-          <p className="text-xs text-slate-500 mb-4">Across all monitored zones</p>
+        <div className="card-glass p-6">
+          <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">Risk Distribution</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Across all monitored zones</p>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={85} innerRadius={40} paddingAngle={3}>
+                <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={85} innerRadius={40} paddingAngle={3} stroke="none">
                   {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i]} />)}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
                 <Legend
-                  formatter={(value) => <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>{value}</span>}
+                  formatter={(value) => <span style={{ color: chartTextColor, fontSize: 11, fontWeight: 500 }}>{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
           <div className="mt-2 grid grid-cols-3 gap-2 text-center">
             {pieData.map((d, i) => (
-              <div key={i} className="rounded-lg py-2" style={{ background: PIE_COLORS[i] + '15' }}>
+              <div key={i} className="rounded-lg py-2" style={{ background: PIE_COLORS[i] + (theme === 'dark' ? '25' : '15') }}>
                 <p className="text-lg font-bold" style={{ color: PIE_COLORS[i] }}>{d.value}</p>
-                <p className="text-[10px] text-slate-500 font-medium">{d.name}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{d.name}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Top hotspots bar chart */}
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6 lg:col-span-2">
+        <div className="card-glass p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-bold text-slate-800">Top Stress Hotspots</h2>
+            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">Top Stress Hotspots</h2>
             <div className="flex gap-1">
               {metricOptions.map(m => (
                 <button
                   key={m.key}
                   onClick={() => setActiveMetric(m.key)}
-                  className={`rounded px-2 py-1 text-[10px] font-bold transition-all ${activeMetric === m.key ? 'text-slate-800 shadow-sm bg-white border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`rounded px-2 py-1 text-[10px] font-bold transition-all ${activeMetric === m.key ? 'text-slate-800 dark:text-slate-100 shadow-sm bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'}`}
                   style={activeMetric === m.key ? { color: m.color } : {}}
                 >
                   {m.label.split(' ')[0]}
@@ -276,14 +281,14 @@ export default function Analytics() {
               ))}
             </div>
           </div>
-          <p className="text-xs text-slate-500 mb-4">Sorted by highest {activeMeta?.label}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Sorted by highest {activeMeta?.label}</p>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ top: 4, right: 8, left: -10, bottom: 40 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} angle={-30} textAnchor="end" interval={0} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} />
+                <XAxis dataKey="name" tick={{ fill: chartTextColor, fontSize: 10, fontWeight: 500 }} angle={-30} textAnchor="end" interval={0} />
+                <YAxis tick={{ fill: chartTextColor, fontSize: 10, fontWeight: 500 }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: chartGridColor }} />
                 <Bar dataKey={activeMetric} name={activeMeta?.label} radius={[4, 4, 0, 0]} shape={(props) => <StressBar {...props} stress={props[activeMetric] ?? props.stress} fill={activeMeta?.color} />} fill={activeMeta?.color} />
               </BarChart>
             </ResponsiveContainer>
@@ -294,14 +299,14 @@ export default function Analytics() {
       {/* Charts Row 2: Radar + Comparison */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Radar chart */}
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
+        <div className="card-glass p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-bold text-slate-800">Zone Profile Radar</h2>
-              <p className="text-xs text-slate-500">Multi-dimensional health fingerprint</p>
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">Zone Profile Radar</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Multi-dimensional health fingerprint</p>
             </div>
             <select
-              className="border border-slate-200 text-xs text-slate-700 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm"
+              className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm"
               onChange={e => setRadarLoc(series.find(s => s.name === e.target.value) || null)}
               defaultValue={series[0]?.name || ''}
             >
@@ -311,9 +316,9 @@ export default function Analytics() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={radarData} margin={{ top: 8, right: 30, bottom: 8, left: 30 }}>
-                <PolarGrid stroke="rgba(0,0,0,0.08)" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 9 }} />
+                <PolarGrid stroke={chartGridColor} />
+                <PolarAngleAxis dataKey="metric" tick={{ fill: chartTextColor, fontSize: 11, fontWeight: 500 }} />
+                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: chartTextColor, fontSize: 9 }} />
                 <Radar name="Zone" dataKey="value" stroke="#0d9488" fill="#0d9488" fillOpacity={0.25} strokeWidth={2} />
                 <Tooltip content={<CustomTooltip />} />
               </RadarChart>
@@ -322,18 +327,18 @@ export default function Analytics() {
         </div>
 
         {/* Comparison tool */}
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
+        <div className="card-glass p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-bold text-slate-800">Zone Comparison</h2>
-              <p className="text-xs text-slate-500">Side-by-side metric analysis</p>
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">Zone Comparison</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Side-by-side metric analysis</p>
             </div>
             <div className="flex gap-2">
-              <select className="border border-slate-200 text-xs text-slate-700 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm" value={compareA} onChange={e => setCompareA(e.target.value)}>
+              <select className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm" value={compareA} onChange={e => setCompareA(e.target.value)}>
                 {series.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
               </select>
-              <span className="text-slate-400 self-center text-xs font-bold">vs</span>
-              <select className="border border-slate-200 text-xs text-slate-700 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm" value={compareB} onChange={e => setCompareB(e.target.value)}>
+              <span className="text-slate-400 dark:text-slate-500 self-center text-xs font-bold">vs</span>
+              <select className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 px-2 py-1.5 rounded-lg outline-none focus:border-indigo-500 shadow-sm" value={compareB} onChange={e => setCompareB(e.target.value)}>
                 {series.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
               </select>
             </div>
@@ -341,11 +346,11 @@ export default function Analytics() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={compareData} layout="vertical" margin={{ left: 10, right: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" horizontal={false} />
-                <XAxis type="number" domain={[0, 200]} tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} />
-                <YAxis type="category" dataKey="name" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} width={80} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
-                <Legend formatter={(v) => <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>{v}</span>} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} horizontal={false} />
+                <XAxis type="number" domain={[0, 200]} tick={{ fill: chartTextColor, fontSize: 10, fontWeight: 500 }} />
+                <YAxis type="category" dataKey="name" tick={{ fill: chartTextColor, fontSize: 10, fontWeight: 500 }} width={80} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: chartGridColor }} />
+                <Legend formatter={(v) => <span style={{ color: chartTextColor, fontSize: 11, fontWeight: 500 }}>{v}</span>} />
                 <Bar dataKey="stressScore" name="Stress" fill="#ef4444" radius={[0, 4, 4, 0]} />
                 <Bar dataKey="aqi" name="AQI" fill="#4f46e5" radius={[0, 4, 4, 0]} />
                 <Bar dataKey="temperature" name="Temp °C" fill="#f59e0b" radius={[0, 4, 4, 0]} />
@@ -357,14 +362,14 @@ export default function Analytics() {
       </div>
 
       {/* 24h Trend chart */}
-      <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl shadow-soft p-6">
+      <div className="card-glass p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <div>
-            <h2 className="text-sm font-bold text-slate-800">24-Hour Stress Forecast</h2>
-            <p className="text-xs text-slate-500">Hourly simulation based on urban temporal patterns</p>
+            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">24-Hour Stress Forecast</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Hourly simulation based on urban temporal patterns</p>
           </div>
           <select
-            className="border border-slate-200 text-xs text-slate-700 px-3 py-2 rounded-lg outline-none focus:border-indigo-500 shadow-sm"
+            className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg outline-none focus:border-indigo-500 shadow-sm"
             onChange={e => setTrendLoc(e.target.value)}
           >
             <option value="">Select a location…</option>
@@ -375,16 +380,16 @@ export default function Analytics() {
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trends} margin={{ top: 8, right: 16, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-                <XAxis dataKey="hour" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} interval={1} />
-                <YAxis domain={[0, 100]} tick={{ fill: '#64748b', fontSize: 10, fontWeight: 500 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} />
+                <XAxis dataKey="hour" tick={{ fill: chartTextColor, fontSize: 10, fontWeight: 500 }} interval={1} />
+                <YAxis domain={[0, 100]} tick={{ fill: chartTextColor, fontSize: 10, fontWeight: 500 }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend formatter={(v) => <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>{v}</span>} />
+                <Legend formatter={(v) => <span style={{ color: chartTextColor, fontSize: 11, fontWeight: 500 }}>{v}</span>} />
                 <ReferenceLine y={65} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'High Risk', fill: '#ef4444', fontSize: 9, position: 'right' }} />
                 <ReferenceLine y={35} stroke="#10b981" strokeDasharray="4 4" label={{ value: 'Low Risk', fill: '#10b981', fontSize: 9, position: 'right' }} />
                 <Line type="monotone" dataKey="stressScore" stroke="#ef4444" strokeWidth={2.5} dot={false} name="Stress Score" />
                 <Line type="monotone" dataKey="crowdDensity" stroke="#0d9488" strokeWidth={1.5} dot={false} name="Crowd %" strokeDasharray="6 3" />
-                <Line type="monotone" dataKey="noiseLevel" stroke="#64748b" strokeWidth={1.5} dot={false} name="Noise dB" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="noiseLevel" stroke={theme === 'dark' ? '#94a3b8' : '#64748b'} strokeWidth={1.5} dot={false} name="Noise dB" strokeDasharray="3 3" />
                 <Line type="monotone" dataKey="aqi" stroke="#4f46e5" strokeWidth={1.5} dot={false} name="AQI" />
               </LineChart>
             </ResponsiveContainer>
@@ -392,7 +397,7 @@ export default function Analytics() {
         ) : (
           <div className="flex flex-col items-center justify-center h-40 gap-3">
             <div className="text-4xl opacity-40">📈</div>
-            <p className="text-xs text-slate-400 font-medium italic">Select a location above to visualize the 24-hour stress cycle</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-medium italic">Select a location above to visualize the 24-hour stress cycle</p>
           </div>
         )}
       </div>
