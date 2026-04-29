@@ -57,13 +57,13 @@ function PopupBody({ loc, onSave, token, savedIds, prediction }) {
       <p className="font-display font-semibold text-slate-900 dark:text-white">{loc.name}</p>
       <dl className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-slate-700 dark:text-slate-300">
         <dt className="text-slate-500 dark:text-slate-400">AQI</dt>
-        <dd>{loc.aqi}</dd>
+        <dd className="text-slate-800 dark:text-slate-200 font-medium">{loc.aqi}</dd>
         <dt className="text-slate-500 dark:text-slate-400">Temp °C</dt>
-        <dd>{loc.temperature}</dd>
+        <dd className="text-slate-800 dark:text-slate-200 font-medium">{loc.temperature}</dd>
         <dt className="text-slate-500 dark:text-slate-400">Crowd</dt>
-        <dd>{loc.crowdDensity}%</dd>
+        <dd className="text-slate-800 dark:text-slate-200 font-medium">{loc.crowdDensity}%</dd>
         <dt className="text-slate-500 dark:text-slate-400">Noise</dt>
-        <dd>{loc.noiseLevel || 0} dB</dd>
+        <dd className="text-slate-800 dark:text-slate-200 font-medium">{loc.noiseLevel || 0} dB</dd>
         <dt className="text-slate-500 dark:text-slate-400">Stress</dt>
         <dd className="font-semibold" style={{ color: loc.stressColor }}>
           {loc.stressScore} ({loc.stressLevel})

@@ -1,0 +1,29 @@
+services:
+  # Backend API Service
+  - type: web
+    name: stress-scape-api
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+
+  # Frontend Web Service
+  - type: web
+    name: stress-scape-web
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: stress-scape-api
+          envVarKey: RENDER_EXTERNAL_URL
