@@ -73,7 +73,7 @@ export default function SmartAdvisor({ locations }) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
           </span>
-          Smart Area Advisor
+          AI Smart Advisor
         </h2>
         
         {locations?.length > 0 ? (
@@ -140,13 +140,13 @@ export default function SmartAdvisor({ locations }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="e.g., I want to jog here..."
-            className="w-full rounded-xl border border-white/10 bg-ink-900/80 px-4 py-3 pr-24 text-sm text-white placeholder-mist/40 outline-none transition-all focus:border-accent focus:bg-ink-900 focus:shadow-[0_0_15px_rgba(13,148,136,0.15)] focus:ring-1 focus:ring-accent"
+            className="w-full rounded-xl border border-white/10 bg-ink-900/80 px-4 py-3 pr-24 text-sm text-white placeholder-mist/30 outline-none transition-all focus:border-accent focus:bg-ink-900 focus:ring-1 focus:ring-accent/50"
             disabled={isLoading || !locations?.length}
           />
           <button 
             type="submit" 
             disabled={isLoading || !input.trim() || !locations?.length}
-            className="absolute right-1.5 top-1.5 bottom-1.5 rounded-lg bg-accent px-4 text-xs font-semibold text-white transition-all duration-300 disabled:opacity-50 hover:bg-accent-dim hover:shadow-[0_0_10px_rgba(13,148,136,0.3)] active:scale-95"
+            className="absolute right-1.5 top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-accent to-accent-dim px-4 text-xs font-bold text-white transition-all duration-300 disabled:opacity-40 hover:shadow-glow-violet active:scale-95"
           >
             Send
           </button>
