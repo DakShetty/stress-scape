@@ -60,7 +60,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 function KpiCard({ label, value, unit = '', icon, color = 'text-white', sub }) {
   const animated = useCountUp(typeof value === 'number' ? value : 0);
   return (
-    <div className="rounded-2xl border border-white/8 bg-gradient-to-br from-ink-900/80 to-ink-950/80 backdrop-blur-sm p-5 flex flex-col gap-1 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/30 group">
+    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-ink-900/80 to-ink-950/80 backdrop-blur-sm p-5 flex flex-col gap-1 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/30 group">
       <div className="flex items-center justify-between mb-1">
         <p className="text-xs font-medium uppercase tracking-widest text-mist/40">{label}</p>
         {icon && <span className="text-lg opacity-60 group-hover:opacity-100 transition-opacity">{icon}</span>}
@@ -203,7 +203,7 @@ export default function Analytics() {
       {/* Charts Row 1 */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Pie */}
-        <div className="rounded-2xl border border-white/8 bg-ink-900/50 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
           <h2 className="text-sm font-semibold text-white mb-1">Risk Distribution</h2>
           <p className="text-xs text-mist/40 mb-4">Across all monitored zones</p>
           <div className="h-64">
@@ -230,7 +230,7 @@ export default function Analytics() {
         </div>
 
         {/* Top hotspots bar chart */}
-        <div className="rounded-2xl border border-white/8 bg-ink-900/50 backdrop-blur-sm p-6 lg:col-span-2">
+        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-sm font-semibold text-white">Top Stress Hotspots</h2>
             <div className="flex gap-1">
@@ -264,7 +264,7 @@ export default function Analytics() {
       {/* Charts Row 2: Radar + Comparison */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Radar chart */}
-        <div className="rounded-2xl border border-white/8 bg-ink-900/50 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-white">Zone Profile Radar</h2>
@@ -292,7 +292,7 @@ export default function Analytics() {
         </div>
 
         {/* Comparison tool */}
-        <div className="rounded-2xl border border-white/8 bg-ink-900/50 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-white">Zone Comparison</h2>
@@ -327,7 +327,7 @@ export default function Analytics() {
       </div>
 
       {/* 24h Trend chart */}
-      <div className="rounded-2xl border border-white/8 bg-ink-900/50 backdrop-blur-sm p-6">
+      <div className="rounded-2xl border border-white/10 bg-ink-900/50 backdrop-blur-sm p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <div>
             <h2 className="text-sm font-semibold text-white">24-Hour Stress Forecast</h2>

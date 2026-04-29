@@ -163,7 +163,7 @@ export default function MapDashboard() {
           <button
             type="button"
             onClick={load}
-            className="rounded-xl border border-white/10 bg-ink-900 px-4 py-2 text-xs font-semibold text-mist/70 transition-all duration-300 hover:bg-white/8 hover:text-white hover:border-white/20 hover:scale-105 active:scale-95"
+            className="rounded-xl border border-white/10 bg-ink-900 px-4 py-2 text-xs font-semibold text-mist/70 transition-all duration-300 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105 active:scale-95"
           >
             ↻ Refresh
           </button>
@@ -172,14 +172,14 @@ export default function MapDashboard() {
               <button
                 type="button"
                 onClick={runSimulate}
-                className="rounded-xl border border-amber-500/30 bg-amber-500/8 px-4 py-2 text-xs font-semibold text-amber-300 transition-all duration-300 hover:bg-amber-500/15 hover:shadow-[0_0_12px_rgba(245,158,11,0.2)] hover:scale-105 active:scale-95"
+                className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-semibold text-amber-300 transition-all duration-300 hover:bg-amber-500/15 hover:shadow-[0_0_12px_rgba(245,158,11,0.2)] hover:scale-105 active:scale-95"
               >
                 ⚡ Simulate
               </button>
               <button
                 type="button"
                 onClick={runSyncManual}
-                className="rounded-xl border border-cyan/30 bg-cyan/8 px-4 py-2 text-xs font-semibold text-cyan-glow transition-all duration-300 hover:bg-cyan/15 hover:shadow-glow-cyan hover:scale-105 active:scale-95"
+                className="rounded-xl border border-cyan/30 bg-cyan/10 px-4 py-2 text-xs font-semibold text-cyan-glow transition-all duration-300 hover:bg-cyan/15 hover:shadow-glow-cyan hover:scale-105 active:scale-95"
               >
                 🔗 Sync Live
               </button>
@@ -188,7 +188,7 @@ export default function MapDashboard() {
           <button
             type="button"
             onClick={tryWeather}
-            className="rounded-xl border border-accent/30 bg-accent/8 px-4 py-2 text-xs font-semibold text-accent-glow transition-all duration-300 hover:bg-accent/15 hover:shadow-glow-violet hover:scale-105 active:scale-95"
+            className="rounded-xl border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-semibold text-accent-glow transition-all duration-300 hover:bg-accent/15 hover:shadow-glow-violet hover:scale-105 active:scale-95"
           >
             🌤 Weather
           </button>

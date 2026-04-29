@@ -83,7 +83,7 @@ export default function Navbar() {
 
           {user && (
             <>
-              <span className="hidden rounded-lg border border-white/8 bg-white/5 px-3 py-2 text-xs text-mist/70 sm:inline">
+              <span className="hidden rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-mist/70 sm:inline">
                 {user.name}
                 {isAdmin && (
                   <span className="ml-2 rounded bg-gradient-to-r from-accent/30 to-cyan/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-glow border border-accent/20">
