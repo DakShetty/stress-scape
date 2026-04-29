@@ -17,8 +17,14 @@ export default function App() {
           <Route path="/register" element={<Register />} />
         </Routes>
       </main>
-      <footer className="border-t border-white/5 py-6 text-center text-xs text-mist/40">
-        StressScape · Data is illustrative
+      <footer className="border-t border-white/5 py-6 text-center text-xs text-mist/30">
+        <span className="font-display font-semibold text-white/50">Stress<span className="text-accent">Scape</span></span>
+        <span className="mx-2 text-white/10">·</span>
+        Urban Environmental Intelligence Platform
+        <span className="mx-2 text-white/10">·</span>
+        Maharashtra, India
+        <span className="mx-2 text-white/10">·</span>
+        © 2026
       </footer>
     </div>
   );

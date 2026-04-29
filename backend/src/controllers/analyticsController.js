@@ -49,29 +49,47 @@ export async function getHistoricalTrends(req, res, next) {
     const loc = await Location.findById(id);
     if (!loc) return res.status(404).json({ success: false, message: 'Location not found' });
 
-    // Generate 24 points (one per hour) using heuristic seasonality
+    // Generate 24 points with realistic time-of-day variance
     const trends = [];
     const now = new Date();
+    // Base values with realistic floor (never zero)
+    const baseAqi = Math.max(30, loc.aqi);
+    const baseTemp = Math.max(18, loc.temperature);
+    const baseCrowd = Math.max(10, loc.crowdDensity);
+    const baseNoise = Math.max(25, loc.noiseLevel || 50);
+
     for (let i = 0; i < 24; i++) {
-        const hour = (now.getHours() - (23 - i) + 24) % 24;
-        const rushFactor = (hour >= 8 && hour <= 10) || (hour >= 17 && hour <= 20) ? 1.2 : 0.9;
-        const heatFactor = hour >= 12 && hour <= 16 ? 1.15 : 0.85;
-        
-        const aqi = Math.round(loc.aqi * rushFactor * (0.9 + Math.random() * 0.2));
-        const temp = Math.round(loc.temperature * heatFactor * (0.95 + Math.random() * 0.1) * 10) / 10;
-        const crowd = Math.round(loc.crowdDensity * rushFactor * (0.8 + Math.random() * 0.4));
-        const noise = Math.round((loc.noiseLevel || 50) * rushFactor * (0.85 + Math.random() * 0.3));
-        
-        const score = computeStressScore(aqi, temp, crowd, noise);
-        
-        trends.push({
-            hour: `${hour}:00`,
-            stressScore: score,
-            aqi,
-            temperature: temp,
-            crowdDensity: Math.min(100, Math.max(0, crowd)),
-            noiseLevel: Math.min(100, Math.max(0, noise))
-        });
+      const hour = (now.getHours() - (23 - i) + 24) % 24;
+
+      // Multi-factor time modifiers
+      const isMorningRush = hour >= 7 && hour <= 10;
+      const isEveningRush = hour >= 17 && hour <= 21;
+      const isPeakHeat = hour >= 12 && hour <= 16;
+      const isNight = hour >= 23 || hour <= 5;
+
+      const crowdFactor = isMorningRush ? 1.35 : isEveningRush ? 1.45 : isNight ? 0.15 : isPeakHeat ? 0.75 : 1.0;
+      const noiseFactor = isMorningRush ? 1.3  : isEveningRush ? 1.4  : isNight ? 0.25 : isPeakHeat ? 0.85 : 1.0;
+      const heatFactor  = isPeakHeat   ? 1.18 : isNight ? 0.88 : isMorningRush ? 0.94 : 1.02;
+      const aqiFactor   = isMorningRush ? 1.22 : isEveningRush ? 1.28 : isNight ? 0.65 : isPeakHeat ? 1.08 : 1.0;
+
+      // Add realistic random walk noise
+      const rand = () => 0.88 + Math.random() * 0.24;
+
+      const aqi   = Math.round(Math.min(500, Math.max(10, baseAqi * aqiFactor * rand())));
+      const temp  = Math.round(Math.min(45, Math.max(15, baseTemp * heatFactor * (0.97 + Math.random() * 0.06))) * 10) / 10;
+      const crowd = Math.round(Math.min(100, Math.max(5,  baseCrowd * crowdFactor * rand())));
+      const noise = Math.round(Math.min(100, Math.max(20, baseNoise * noiseFactor * rand())));
+
+      const score = computeStressScore(aqi, temp, crowd, noise);
+
+      trends.push({
+        hour: `${String(hour).padStart(2,'0')}:00`,
+        stressScore: score,
+        aqi,
+        temperature: temp,
+        crowdDensity: crowd,
+        noiseLevel: noise
+      });
     }
 
     res.json({ success: true, location: loc.name, trends });

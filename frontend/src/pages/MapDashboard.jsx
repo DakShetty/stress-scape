@@ -243,12 +243,19 @@ export default function MapDashboard() {
               {[
                 ['aqi', 'AQI'],
                 ['temperature', 'Temperature'],
-                ['crowd', 'Crowd density'],
-                ['stress', 'Stress map'],
+                ['crowd', 'Crowd Density'],
+                ['noise', 'Noise Level'],
+                ['stress', 'Stress Score'],
               ].map(([key, label]) => (
                 <label
                   key={key}
-                  className="group flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-ink-950/80 px-3 py-2 text-sm transition-all hover:bg-white/5 hover:border-white/20"
+                  className={`group flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all ${
+                    key === 'stress'
+                      ? 'border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 hover:border-rose-500/40'
+                      : key === 'noise'
+                      ? 'border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 hover:border-indigo-500/40'
+                      : 'border-white/10 bg-ink-950/80 hover:bg-white/5 hover:border-white/20'
+                  }`}
                 >
                   <input
                     type="checkbox"
@@ -258,16 +265,6 @@ export default function MapDashboard() {
                   {label}
                 </label>
               ))}
-              <label
-                className="group flex cursor-pointer items-center gap-2 rounded-lg border border-indigo-500/20 bg-indigo-500/5 px-3 py-2 text-sm transition-all hover:bg-indigo-500/10 hover:border-indigo-500/40"
-              >
-                <input
-                  type="checkbox"
-                  checked={layers.noise}
-                  onChange={() => toggle('noise')}
-                />
-                Noise Layer
-              </label>
             </div>
             <p className="mt-3 text-xs text-mist/50">
               Green / yellow / red on the stress layer: low / medium / high composite stress.
